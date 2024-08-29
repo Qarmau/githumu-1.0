@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holiday Assignments - Githumu High School</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-image: linear-gradient(to bottom, #f4f4f4 0%, #e0e0e0 100%);
+        }
+
+        #news {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 0 auto 20px; /* Center section and add margin-bottom */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Optional: set a max-width for better control */
+            text-align: center; /* Center text inside the section */
+        }
+
+        #news h3 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .assignments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .assignment-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn {
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .download-btn:hover {
+            color: #1a252f;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-items {
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #333;
+            max-width: 800px; /* Optional: set a max-width for better control */
+            margin: 0 auto; /* Center the empty state */
+        }
+    </style>
+</head>
+<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Holiday Assignments - Githumu High School{% endblock %}
+
+{% block content %}
+<section id="news">
+    <h3>Assignments</h3>
+</section>
+
+<div class="assignments-grid">
+    {% for grade_item in all_grades %}
+    <div class="assignment-card">
+        <ul>
+            <li><a href="{% url 'assignments' grade_item.first_assignment_id %}" class="download-btn">Form {{ grade_item.grade }}</a></li>
+        </ul>
+    </div>
+    {% empty %}
+    <div class="no-items">
+        No classes available for the specified assignment title.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+</body>
+</html>

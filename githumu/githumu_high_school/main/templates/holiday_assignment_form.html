@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .upload-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-family: 'Poppins', sans-serif;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 2rem;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    input[type="text"], input[type="file"], select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+    input[type="file"] {
+        padding: 0.5rem;
+    }
+    button[type="submit"] {
+        background: #28a745; /* Green color */
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    button[type="submit"]:hover {
+        background: #218838; /* Darker green on hover */
+    }
+    .file-upload {
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    .file-upload input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        cursor: inherit;
+        display: block;
+    }
+    .file-upload-btn {
+        background: #f3f3f3;
+        border: 2px dashed #ccc;
+        color: #666;
+        padding: 1rem;
+        text-align: center;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="upload-container">
+    <h1>Upload Holiday Assignment</h1>
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.name == 'file' %}
+                    <div class="file-upload">
+                        <div class="file-upload-btn" id="fileUploadBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Choose File
+                        </div>
+                        {{ field }}
+                    </div>
+                    <p id="selectedFileName"></p>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.querySelector('input[type="file"]');
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const selectedFileName = document.getElementById('selectedFileName');
+
+    fileUploadBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            selectedFileName.textContent = `Selected file: ${fileInput.files[0].name}`;
+        } else {
+            selectedFileName.textContent = '';
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Holiday assignment uploaded successfully!');
+                form.reset();
+                selectedFileName.textContent = '';
+            } else {
+                alert('Failed to upload holiday assignment. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
+
+{% endblock %}

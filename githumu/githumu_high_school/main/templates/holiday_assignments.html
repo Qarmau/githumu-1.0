@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    /* Base Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container */
+    .assignments-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .action-button {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        color: white;
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .action-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Assignments */
+    .assignment {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .assignment:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .assignment h2 {
+        margin-top: 0;
+        color: #333;
+        font-size: 1.75rem;
+    }
+
+    .assignment p {
+        color: #666;
+        font-size: 1rem;
+    }
+
+    .assignment-actions {
+        margin-top: 1rem;
+        text-align: right;
+    }
+
+    .assignment-action {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-left: 0.5rem;
+    }
+
+    .download-action {
+        background: #2196F3;
+        color: white;
+    }
+
+    .delete-action {
+        background: #f44336;
+        color: white;
+    }
+
+    .assignment-action:hover {
+        opacity: 0.8;
+    }
+
+    /* Media Queries for Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .assignments-container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .action-button {
+            width: 100%;
+            min-width: unset;
+            text-align: center;
+        }
+
+        .assignment {
+            padding: 1rem;
+        }
+
+        .assignment-actions {
+            text-align: center;
+        }
+
+        .assignment-action {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+<div class="assignments-container">
+    <h1>Admin Site</h1>
+    <div class="action-buttons">
+        <a href="{% url 'holiday_assignment_create' %}" class="action-button create-assignment">Create Assignment</a>
+        <a href="{% url 'upload_past_paper' %}" class="action-button upload-past-paper">Upload Past Paper</a>
+        <a href="{% url 'upload_revision_material' %}" class="action-button upload-revision-material">Upload Revision Material</a>
+    </div>
+ 
+    <!-- Example Assignment -->
+    <!-- Add your dynamic content here -->
+
+</div>
+
+<script>
+    // Example JavaScript for interactive elements
+    document.querySelectorAll('.action-button').forEach(button => {
+        button.addEventListener('click', function() {
+            alert(`You clicked on ${this.textContent.trim()}`);
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .upload-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-family: 'Poppins', sans-serif;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 2rem;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    input[type="text"], input[type="file"], select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+    input[type="file"] {
+        padding: 0.5rem;
+    }
+    button[type="submit"] {
+        background: #FF9800;
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    button[type="submit"]:hover {
+        background: #F57C00;
+    }
+    .file-drop-area {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        padding: 25px;
+        border: 2px dashed #ddd;
+        border-radius: 3px;
+        transition: 0.2s;
+        &.is-active {
+            background-color: rgba(255, 152, 0, 0.05);
+        }
+    }
+    .fake-btn {
+        flex-shrink: 0;
+        background-color: rgba(255, 152, 0, 0.04);
+        border: 1px solid rgba(255, 152, 0, 0.1);
+        border-radius: 3px;
+        padding: 8px 15px;
+        margin-right: 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    .file-msg {
+        font-size: small;
+        font-weight: 300;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        opacity: 0;
+        &:focus {
+            outline: none;
+        }
+   }
+</style>
+
+<div class="upload-container">
+    <h1>Upload Revision Material</h1>
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.name == 'file' %}
+                    <div class="file-drop-area">
+                        <span class="fake-btn">Choose files</span>
+                        <span class="file-msg">or drag and drop files here</span>
+                        {{ field }}
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.querySelector('input[type="file"]');
+    const fileDropArea = document.querySelector('.file-drop-area');
+    const fileMsg = fileDropArea.querySelector('.file-msg');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileDropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter',    'dragover'].forEach(eventName => {
+        fileDropArea.addEventListener(eventName, () => {
+            fileDropArea.classList.add('is-active');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileDropArea.addEventListener(eventName, () => {
+            fileDropArea.classList.remove('is-active');
+        }, false);
+    });
+
+    fileDropArea.addEventListener('drop', handleDrop, false);
+    fileInput.addEventListener('change', updateFileMessage, false);
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+ 
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        updateFileMessage();
+    }
+
+    function updateFileMessage() {
+        const files = fileInput.files;
+        if (files.length > 0) {
+            fileMsg.textContent = files.length === 1 ? files[0].name : `${files.length} files selected`;
+        } else {
+            fileMsg.textContent = 'or drag and drop files here';
+        }
+    }
+});
+</script>
+
+{% endblock %}

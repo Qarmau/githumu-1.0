@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Registration Page Styles */
+    .registration-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .registration-container h1 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-color);
+        font-weight: bold;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--light-gray);
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .form-group textarea {
+        height: 150px;
+        resize: vertical;
+    }
+
+    button[type="submit"] {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: var(--secondary-color);
+    }
+
+    /* Password Toggle Icon */
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #888;
+    }
+
+    .password-toggle:hover {
+        color: #333;
+    }
+
+    #profile-fields {
+        margin-top: 20px;
+    }
+
+    /* Form Container */
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Elements */
+    form input,
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    /* Form Labels */
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    /* Submit Button */
+    form button[type="submit"] {
+        background-color: #0077be;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    form button[type="submit"]:hover {
+        background-color: #005c99;
+    }
+
+    /* Profile Fields */
+    #profile-fields {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="registration-container">
+    <h1>Register</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ user_form.username.label_tag }} {{ user_form.username }}
+            {{ user_form.email.label_tag }} {{ user_form.email }}
+            {{ user_form.password1.label_tag }}
+            <div class="form-group" style="position: relative;">
+                {{ user_form.password1 }}
+                <span class="password-toggle" onclick="togglePasswordVisibility('id_password1')">
+                    &#x1F441;
+                </span>
+            </div>
+            {{ user_form.password2.label_tag }}
+            <div class="form-group" style="position: relative;">
+                {{ user_form.password2 }}
+                <span class="password-toggle" onclick="togglePasswordVisibility('id_password2')">
+                    &#x1F441;
+                </span>
+            </div>
+            {{ user_form.user_type.label_tag }} {{ user_form.user_type }}
+        </div>
+
+        <div id="profile-fields" class="form-group"></div>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userTypeSelect = document.querySelector('#id_user_type');
+        const profileFields = document.querySelector('#profile-fields');
+
+        const administratorProfileFields = `{{ administrator_profile_form.as_p|escapejs }}`;
+        const teacherProfileFields = `{{ teacher_profile_form.as_p|escapejs }}`;
+
+        function updateProfileFields() {
+            const userType = userTypeSelect.value;
+            if (userType === 'administrator') {
+                profileFields.innerHTML = administratorProfileFields;
+            } else if (userType === 'teacher') {
+                profileFields.innerHTML = teacherProfileFields;
+            } else {
+                profileFields.innerHTML = ''; // Clear the fields if no valid selection
+            }
+        }
+
+        userTypeSelect.addEventListener('change', updateProfileFields);
+        updateProfileFields();  // Initialize with the correct fields on page load
+    });
+
+    function togglePasswordVisibility(passwordFieldId) {
+        const passwordField = document.getElementById(passwordFieldId);
+        const passwordToggle = passwordField.nextElementSibling;
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            passwordToggle.innerHTML = "&#x1F441;"; // Change icon to indicate visibility
+        } else {
+            passwordField.type = "password";
+            passwordToggle.innerHTML = "&#x1F441;"; // Reset icon
+        }
+    }
+</script>
+{% endblock %}

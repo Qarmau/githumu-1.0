@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        /* Background animation */
+        @keyframes moveBackground {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #f0f0f0;
+            overflow: hidden;
+            scroll-behavior: smooth; /* Smooth scroll for anchor links */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(40, 40, 40, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        h3 {
+            color: #f0f8ff;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.5em;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #2c3e50;
+            border: 1px solid #34495e;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        li:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+        }
+
+        h4 {
+            color: #ecf0f1;
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        span {
+            font-size: 0.9em;
+            color: #1abc9c;
+        }
+
+        a {
+            color: #1abc9c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p {
+            font-style: italic;
+            color: #ecf0f1;
+        }
+
+        .recent-searches {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .recent-searches ul {
+            padding: 0;
+        }
+
+        .recent-searches li {
+            margin: 5px 0;
+        }
+
+        .go-back {
+            display: block;
+            text-align: center;
+            margin: 20px;
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        .go-back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Search Results for <strong style="color: blue">{{ query }}</strong></h3>
+
+        {% if results %}
+            <ul>
+                {% for result in results %}
+                    <li>
+                        <h4>{{ result.title }} <span>{{ result.year }}</span></h4>
+                        {% if result.file %}
+                            <a href="{{ result.file.url }}" download>Download {{ result.subject }}</a>
+                        {% endif %}
+                        {% if result.grade %}
+                            <p>FORM {{ result.grade }}</p>
+                        {% endif %}
+                        <!-- Add more fields as needed -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+
+        <div class="recent-searches">
+            <h3>Recent Searches:</h3>
+            <ul>
+                {% for search in searches %}
+                    <li><a href="{% url 'search' %}?q={{ search }}">{{ search }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a class="go-back" href="{% url 'academics' %}">Go Back to Academics</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set the animated dark background
+            document.body.style.background = 'linear-gradient(135deg, #000000, #434343)';
+            document.body.style.backgroundSize = '200% 200%';
+            document.body.style.animation = 'moveBackground 15s ease infinite';
+
+            // Smooth scroll effect for the entire page
+            const scrollEffect = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            // Automatically scroll to the top when the page loads
+            scrollEffect();
+        });
+    </script>
+</body>
+</html>
